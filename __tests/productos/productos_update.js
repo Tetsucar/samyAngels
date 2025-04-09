@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../app'); 
+const app = require('../../app'); 
 
 describe('Actualizar Precio de Producto', () => {
   it('debe actualizar el precio de un producto existente', async () => {
