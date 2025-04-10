@@ -1,7 +1,7 @@
 # 🛍️ SamyAngels - Backend
 
 Este proyecto representa el backend de la plataforma **SamyAngels**, una tienda online que permite a los usuarios registrarse, iniciar sesión, seleccionar productos, elegir métodos de pago y registrar pedidos.
-
+Todo el proyecto completo se encuentra en la rama actualizacion
 ---
 
 ## 🚀 Tecnologías usadas
