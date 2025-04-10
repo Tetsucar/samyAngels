@@ -1,6 +1,6 @@
 const Producto = require('../models/producto');
 
-// 👉 Controlador para listar todos los productos
+// 👉 Listar todos los productos
 const listarProductos = async (req, res) => {
   try {
     const productos = await Producto.findAll();
@@ -11,7 +11,7 @@ const listarProductos = async (req, res) => {
   }
 };
 
-// 👉 Controlador para actualizar el precio de un producto
+// 👉 Actualizar solo el precio
 const actualizarPrecio = async (req, res) => {
   const { precio } = req.body;
   const { id } = req.params;
@@ -31,8 +31,33 @@ const actualizarPrecio = async (req, res) => {
   }
 };
 
+// 👉 Reemplazar todo el producto (nombre, categoría y precio)
+const reemplazarProducto = async (req, res) => {
+  const { id } = req.params;
+  const { nombre, categoria, precio } = req.body;
+
+  try {
+    const producto = await Producto.findByPk(id);
+    if (!producto) {
+      return res.status(404).json({ message: 'Producto no encontrado' });
+    }
+
+    if (nombre) producto.nombre = nombre;
+    if (categoria) producto.categoria = categoria;
+    if (precio !== undefined) producto.precio = precio;
+
+    await producto.save();
+    res.status(200).json(producto);
+  } catch (error) {
+    console.error('Error al reemplazar el producto:', error);
+    res.status(500).json({ message: 'Error en el servidor' });
+  }
+};
+
 module.exports = {
   listarProductos,
-  actualizarPrecio
+  actualizarPrecio,
+  reemplazarProducto 
 };
+
 
