@@ -1,28 +1,47 @@
 const request = require('supertest');
-const app = require('../../app'); 
+const app = require('../../app');
+const Producto = require('../../models/producto');
 
-describe('Actualizar Precio de Producto', () => {
-  it('debe actualizar el precio de un producto existente', async () => {
-    const productoId = 1; 
-    const nuevoPrecio = 14000.00;
+describe('🛠️ HU 012 - Reemplazar producto completo por ID', () => {
+  test('Debería actualizar nombre, categoría y precio de un producto con ID específico', async () => {
+    const idProducto = 4; // ← Cambia este ID según tu base de datos
 
-    const response = await request(app)
-      .put(`/productos/${productoId}`)
-      .send({ precio: nuevoPrecio });
+    const producto = await Producto.findByPk(idProducto);
+    expect(producto).toBeDefined();
 
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty('id', productoId);
-    expect(response.body).toHaveProperty('precio', nuevoPrecio);
+    const nuevoProducto = {
+      nombre: 'Corrector HD',
+      categoria: 'maquillaje',
+      precio: 30000
+    };
+
+    const res = await request(app)
+      .put(`/productos/${idProducto}`)
+      .send(nuevoProducto);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toMatchObject({
+      id: idProducto,
+      nombre: nuevoProducto.nombre,
+      categoria: nuevoProducto.categoria,
+      precio: nuevoProducto.precio 
+    });
+
+    const actualizado = await Producto.findByPk(idProducto);
+    expect(actualizado.nombre).toBe(nuevoProducto.nombre);
+    expect(actualizado.categoria).toBe(nuevoProducto.categoria);
+    expect(parseFloat(actualizado.precio)).toBeCloseTo(nuevoProducto.precio);
   });
 
-  it('debe retornar 404 si el producto no existe', async () => {
-    const productoIdInexistente = 9999;
+  test('Debería responder con 404 si el producto no existe', async () => {
+    const idInexistente = 99999; // ID que no existe en la base de datos
 
-    const response = await request(app)
-      .put(`/productos/${productoIdInexistente}`)
-      .send({ precio: 50.00 });
+    const res = await request(app)
+      .put(`/productos/${idInexistente}`)
+      .send({ nombre: 'Fake', categoria: 'ninguna', precio: 1 });
 
-    expect(response.status).toBe(404);
-    expect(response.body).toHaveProperty('message', 'Producto no encontrado');
+    expect(res.statusCode).toBe(404);
+    expect(res.body).toHaveProperty('message');
+    expect(res.body.message).toMatch(/no encontrado/i);
   });
 });
