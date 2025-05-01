@@ -3,9 +3,9 @@ const app = require('../../app');
 
 describe('Registro de usuario exitoso', () => {
   test('Debería registrar un nuevo usuario con éxito', async () => {
-    const nombre = 'exitoso';
-    const correo = 'login_exitoso@test.com';
-    const contraseña= '1234';
+    const nombre = 'jessika';
+    const correo = 'jessika@test.com';
+    const contraseña= 'jessika1061';
     const res = await request(app)
       .post('/usuarios/registro')
       .send({nombre,correo,contraseña});

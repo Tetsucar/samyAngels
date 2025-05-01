@@ -11,8 +11,14 @@ var usuariosRouter= require('./routes/usuarios');
 var carritoRouter = require('./routes/carrito');
 const pagoRouter = require('./routes/pago');
 const pedidoRouter = require('./routes/pedido');
+const recuperacionRouter = require('./routes/recuperacion');
 
 var app = express();
+
+// Swagger: documentación de la API
+const swaggerUI = require('swagger-ui-express');
+const swaggerDocument = require('./config/swagger.json');
+app.use('/document', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -31,6 +37,7 @@ app.use('/usuarios', usuariosRouter);
 app.use('/carrito', carritoRouter);
 app.use('/pago', pagoRouter);
 app.use('/pedido', pedidoRouter);
+app.use('/recuperacion', recuperacionRouter);
 
 
 // catch 404 and forward to error handler
