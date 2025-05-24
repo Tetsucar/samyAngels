@@ -1,4 +1,3 @@
-// Pedido con producto inexistente
 const request = require('supertest');
 const app = require('../../app');
 
@@ -7,6 +6,7 @@ describe('Producto inexistente en pedido', () => {
     const res = await request(app)
       .post('/pedido/confirmar')
       .send({
+        usuarioId: 1,  // <-- Agregado
         productos: [
           { id: 1, cantidad: 1 },
           { id: 99999, cantidad: 2 }

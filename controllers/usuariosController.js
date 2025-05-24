@@ -1,6 +1,6 @@
 const Usuario = require('../models/usuario');
 
-// 👉 Registrar un nuevo usuario
+// Registrar un nuevo usuario
 const registrarUsuario = async (req, res) => {
     try {
       const { nombre, correo, contraseña } = req.body;
@@ -26,7 +26,7 @@ const registrarUsuario = async (req, res) => {
   };
   
 
-// 👉 Iniciar sesión
+// Iniciar sesión
 const iniciarSesion = async (req, res) => {
   try {
     const { correo, contraseña } = req.body;

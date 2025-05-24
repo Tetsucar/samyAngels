@@ -1,6 +1,6 @@
 const Producto = require('../models/producto');
 
-// 👉 Listar todos los productos
+// Listar todos los productos
 const listarProductos = async (req, res) => {
   try {
     const productos = await Producto.findAll();
@@ -11,7 +11,7 @@ const listarProductos = async (req, res) => {
   }
 };
 
-// 👉 Actualizar solo el precio
+// Actualizar solo el precio
 const actualizarPrecio = async (req, res) => {
   const { precio } = req.body;
   const { id } = req.params;
@@ -31,10 +31,10 @@ const actualizarPrecio = async (req, res) => {
   }
 };
 
-// 👉 Reemplazar todo el producto (nombre, categoría y precio)
+// Reemplazar todo el producto (nombre, categoría y precio)
 const reemplazarProducto = async (req, res) => {
   const { id } = req.params;
-  const { nombre, categoria, precio } = req.body;
+  const { nombre, categoria, precio, stock } = req.body;
 
   try {
     const producto = await Producto.findByPk(id);
@@ -45,6 +45,7 @@ const reemplazarProducto = async (req, res) => {
     if (nombre) producto.nombre = nombre;
     if (categoria) producto.categoria = categoria;
     if (precio !== undefined) producto.precio = precio;
+    if (stock) producto.stock = stock;
 
     await producto.save();
     res.status(200).json(producto);
@@ -54,10 +55,29 @@ const reemplazarProducto = async (req, res) => {
   }
 };
 
+const actualizarStock = async (req, res) => {
+  const { id } = req.params;
+  const { stock } = req.body;
+
+  try {
+    const producto = await Producto.findByPk(id);
+    if (!producto) return res.status(404).json({ message: 'Producto no encontrado' });
+
+    producto.stock = stock;
+    await producto.save();
+
+    res.status(200).json(producto);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al actualizar stock' });
+  }
+};
+
+
 module.exports = {
   listarProductos,
   actualizarPrecio,
-  reemplazarProducto 
+  reemplazarProducto,
+  actualizarStock 
 };
 
 
