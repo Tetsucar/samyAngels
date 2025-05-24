@@ -3,18 +3,21 @@ const app = require('../../app');
 const { __getToken } = require('../../controllers/recuperacionController');
 
 describe('Recuperación de contraseña (usuarios reales)', () => {
-  const correo = 'cliente@test.com'; // ← Usa un correo que YA exista en tu base
-  const nuevaClave = 'nueva123';
+  const correo = 'eduardo@test.com'; // ← Asegúrate de que exista en tu base de datos
+  const nuevaClave = 'tetsubebecita';
+  let token;
 
   test('Solicitar recuperación con correo válido', async () => {
     const res = await request(app).post('/recuperacion/solicitar').send({ correo });
     expect(res.statusCode).toBe(200);
     expect(res.body.mensaje).toMatch(/código de recuperación/i);
+
+    // Obtener el token inmediatamente después de la solicitud
+    token = __getToken(correo);
+    expect(token).toBeDefined();
   });
 
   test('Cambiar contraseña con token correcto', async () => {
-    const token = __getToken(correo); // ← Se obtiene del controlador
-
     const res = await request(app).post('/recuperacion/cambiar').send({
       correo,
       token,

@@ -7,6 +7,8 @@ var app = require('../app');
 var debug = require('debug')('mi-proyecto:server');
 var http = require('http');
 var sequelize = require('../config/database'); // 👈 importa la conexión Sequelize
+require('../models'); // <-- importante para que se registren los modelos
+
 
 /**
  * Get port from environment and store in Express.
@@ -22,7 +24,7 @@ var server = http.createServer(app);
 /**
  * Synchronize DB and then start the server
  */
-sequelize.sync().then(() => {
+sequelize.sync({ alter: true }).then(() => {
   console.log('Base de datos sincronizada');
   server.listen(port);
   server.on('error', onError);

@@ -1,4 +1,4 @@
-// Pedido con método de pago inválido
+//pedido con metodo de pago invalido
 const request = require('supertest');
 const app = require('../../app');
 const Producto = require('../../models/producto');
@@ -11,7 +11,7 @@ describe('Método de pago inválido', () => {
 
     const res = await request(app)
       .post('/pedido/confirmar')
-      .send({ productos, metodoPago: 'bitcoin' });
+      .send({ usuarioId: 1, productos, metodoPago: 'bitcoin' });  // <-- Aquí agregas usuarioId
 
     expect(res.statusCode).toBe(400);
     expect(res.body).toHaveProperty('mensaje');
