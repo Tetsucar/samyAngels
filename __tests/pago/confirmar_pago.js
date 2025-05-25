@@ -5,7 +5,7 @@ const Pedido = require('../../models/pedido');
 describe('Confirmar pago de pedido pendiente', () => {
   // Usa un pedido que ya esté en tu base de datos en estado pendiente
   // Cambia este id por uno válido en tu base de datos
-  const pedidoIdExistente = 4; 
+  const pedidoIdExistente = 7; 
 
   test('Debería actualizar el pedido existente a estado pagado', async () => {
     const metodoPago = 'efectivo';

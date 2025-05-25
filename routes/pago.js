@@ -13,9 +13,9 @@ const { elegirMetodoPago } = require('../controllers/pagoController');
  *       properties:
  *         metodo:
  *           type: string
- *           description: Método de pago elegido (ej. tarjeta, paypal, efectivo)
+ *           description: Método de pago elegido (ej. nequi, bancolombia, efectivo)
  *       example:
- *         metodo: tarjeta
+ *         metodo: nequi
 
  *     ConfirmacionPago:
  *       type: object

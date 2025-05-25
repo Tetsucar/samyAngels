@@ -12,6 +12,7 @@ var carritoRouter = require('./routes/carrito');
 const pagoRouter = require('./routes/pago');
 const pedidoRouter = require('./routes/pedido');
 const recuperacionRouter = require('./routes/recuperacion');
+const autenticacion = require('./middlewares/autenticacion');
 
 var app = express();
 
@@ -29,6 +30,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(autenticacion);
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

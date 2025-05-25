@@ -8,20 +8,23 @@ const { registrarPedido, confirmarPago, obtenerReciboPedido, anularPedido } = re
  *   schemas:
  *     ProductoPedido:
  *       type: object
+ *       required:
+ *         - id
+ *         - cantidad
  *       properties:
  *         id:
  *           type: integer
  *         cantidad:
  *           type: integer
- *       required:
- *         - id
- *         - cantidad
  *       example:
  *         id: 1
  *         cantidad: 3
 
  *     Pedido:
  *       type: object
+ *       required:
+ *         - usuarioId
+ *         - productos
  *       properties:
  *         usuarioId:
  *           type: integer
@@ -31,18 +34,15 @@ const { registrarPedido, confirmarPago, obtenerReciboPedido, anularPedido } = re
  *             $ref: '#/components/schemas/ProductoPedido'
  *         metodoPago:
  *           type: string
- *       required:
- *         - usuarioId
- *         - productos
- *         - metodoPago
+ *           enum: [efectivo, nequi, bancolombia]
  *       example:
- *         usuarioId: 5
+ *         usuarioId: 1
  *         productos:
  *           - id: 1
  *             cantidad: 2
  *           - id: 3
  *             cantidad: 1
- *         metodoPago: tarjeta
+ *         metodoPago: nequi
 
  *     ConfirmacionPedido:
  *       type: object
@@ -51,46 +51,80 @@ const { registrarPedido, confirmarPago, obtenerReciboPedido, anularPedido } = re
  *           type: integer
  *         mensaje:
  *           type: string
+ *         estado:
+ *           type: string
+ *         total:
+ *           type: number
+ *         productos:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/ProductoPedido'
  *       example:
  *         pedidoId: 123
- *         mensaje: Pedido registrado correctamente
+ *         mensaje: Pedido registrado con éxito
+ *         estado: pagado
+ *         total: 399.98
+ *         productos:
+ *           - id: 1
+ *             cantidad: 2
 
- *     EstadoPago:
+ *     ConfirmarPago:
  *       type: object
+ *       required:
+ *         - pedidoId
+ *         - metodoPago
  *       properties:
  *         pedidoId:
  *           type: integer
- *         pagado:
- *           type: boolean
+ *         metodoPago:
+ *           type: string
+ *           enum: [efectivo, nequi, bancolombia]
  *       example:
  *         pedidoId: 123
- *         pagado: true
+ *         metodoPago: nequi
 
  *     ReciboPedido:
  *       type: object
  *       properties:
  *         pedidoId:
  *           type: integer
+ *         estado:
+ *           type: string
  *         productos:
  *           type: array
  *           items:
- *             $ref: '#/components/schemas/ProductoPedido'
+ *             type: object
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *               cantidad:
+ *                 type: integer
+ *               precioUnitario:
+ *                 type: number
+ *               subtotal:
+ *                 type: number
  *         total:
  *           type: number
  *       example:
  *         pedidoId: 123
+ *         estado: pagado
  *         productos:
- *           - id: 1
+ *           - nombre: Coca Cola
  *             cantidad: 2
- *         total: 199.99
+ *             precioUnitario: 2000
+ *             subtotal: 4000
+ *         total: 4000
 
  *     CancelacionPedido:
  *       type: object
  *       properties:
  *         mensaje:
  *           type: string
+ *         estado:
+ *           type: string
  *       example:
- *         mensaje: Pedido anulado correctamente
+ *         mensaje: Pedido anulado con éxito
+ *         estado: anulado
  */
 
 /**
@@ -119,6 +153,8 @@ const { registrarPedido, confirmarPago, obtenerReciboPedido, anularPedido } = re
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ConfirmacionPedido'
+ *       400:
+ *         description: Datos faltantes o productos inválidos
  */
 router.post('/confirmar', registrarPedido);
 
@@ -126,17 +162,38 @@ router.post('/confirmar', registrarPedido);
  * @swagger
  * /pedido/confirmar-pago:
  *   put:
- *     summary: Confirma el pago de un pedido
+ *     summary: Confirma el pago de un pedido existente
  *     tags: [Pedido]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/EstadoPago'
+ *             $ref: '#/components/schemas/ConfirmarPago'
  *     responses:
  *       200:
- *         description: Estado de pago actualizado
+ *         description: Pago confirmado correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensaje:
+ *                   type: string
+ *                 pedidoId:
+ *                   type: integer
+ *                 estado:
+ *                   type: string
+ *                 montoPagado:
+ *                   type: number
+ *                 metodoPago:
+ *                   type: string
+ *       400:
+ *         description: Datos inválidos o pedido no pendiente
+ *       403:
+ *         description: Acceso no autorizado
+ *       404:
+ *         description: Pedido no encontrado
  */
 router.put('/confirmar-pago', confirmarPago);
 
@@ -144,7 +201,7 @@ router.put('/confirmar-pago', confirmarPago);
  * @swagger
  * /pedido/{id}:
  *   get:
- *     summary: Obtiene el recibo de un pedido
+ *     summary: Obtiene el recibo de un pedido por ID
  *     tags: [Pedido]
  *     parameters:
  *       - in: path
@@ -155,11 +212,13 @@ router.put('/confirmar-pago', confirmarPago);
  *         description: ID del pedido
  *     responses:
  *       200:
- *         description: Recibo del pedido
+ *         description: Recibo generado correctamente
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ReciboPedido'
+ *       403:
+ *         description: Acceso no autorizado
  *       404:
  *         description: Pedido no encontrado
  */
@@ -169,7 +228,7 @@ router.get('/:id', obtenerReciboPedido);
  * @swagger
  * /pedido/anular/{id}:
  *   put:
- *     summary: Anula un pedido
+ *     summary: Anula un pedido existente
  *     tags: [Pedido]
  *     parameters:
  *       - in: path
@@ -185,8 +244,12 @@ router.get('/:id', obtenerReciboPedido);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/CancelacionPedido'
+ *       403:
+ *         description: Acceso no autorizado
  *       404:
  *         description: Pedido no encontrado
+ *       400:
+ *         description: El pedido ya está anulado
  */
 router.put('/anular/:id', anularPedido);
 
