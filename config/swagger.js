@@ -1,17 +1,28 @@
 // config/swagger.js
-const swaggerAutogen = require('swagger-autogen')();
+const swaggerJsdoc = require('swagger-jsdoc');
 
-const outputFile = './config/swagger.json';
-const endPointsFiles = ['./app.js']; 
-
-const doc = {
-  info: {
-    title: 'API Samyangels',
-    description: 'Documentación generada automáticamente para el proyecto Samyangels',
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'API Samyangels',
+      version: '1.0.0',
+      description: 'Documentación de la API de Samyangels',
+      contact: {
+        name: 'Grupo D'
+      }
+    },
+    servers: [
+      {
+        url: 'http://localhost:3000',
+        description: 'Servidor local'
+      }
+    ]
   },
-  host: 'localhost:3000',
-  schemes: ['http'],
+  apis: ['./routes/*.js'] // Aquí Swagger escaneará tus rutas para las anotaciones
 };
 
-swaggerAutogen(outputFile, endPointsFiles, doc);
+const swaggerSpec = swaggerJsdoc(options);
+module.exports = swaggerSpec;
+
 

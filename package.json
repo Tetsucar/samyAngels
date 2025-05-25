@@ -16,6 +16,7 @@
     "mysql2": "^3.13.0",
     "pug": "^3.0.3",
     "sequelize": "^6.37.6",
+    "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
@@ -23,4 +24,3 @@
     "swagger-autogen": "^2.23.7"
   }
 }
-

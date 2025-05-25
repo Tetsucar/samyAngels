@@ -17,8 +17,8 @@ var app = express();
 
 // Swagger: documentación de la API
 const swaggerUI = require('swagger-ui-express');
-const swaggerDocument = require('./config/swagger.json');
-app.use('/document', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+const swaggerSpec = require('./config/swagger');
+app.use('/document', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
