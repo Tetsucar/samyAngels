@@ -92,6 +92,11 @@ exports.confirmarPago = async (req, res) => {
       return res.status(404).json({ mensaje: 'Pedido no encontrado' });
     }
 
+    // 🛡 Protección OWASP API1:
+    if (pedido.usuarioId !== req.user.id) {
+      return res.status(403).json({ mensaje: 'No tiene permiso para confirmar este pedido' });
+    }
+
     if (pedido.estado !== 'pendiente') {
       return res.status(400).json({ mensaje: 'Solo se pueden confirmar pedidos pendientes' });
     }
@@ -136,6 +141,11 @@ exports.obtenerReciboPedido = async (req, res) => {
       return res.status(404).json({ mensaje: 'Pedido no encontrado' });
     }
 
+    // 🛡 Protección OWASP API1:
+    if (pedido.usuarioId !== req.user.id) {
+      return res.status(403).json({ mensaje: 'No tiene permiso para ver este pedido' });
+    }
+
     // Buscar los detalles del pedido
     const detalles = await DetallePedido.findAll({ where: { pedidoId: id } });
 
@@ -175,6 +185,11 @@ exports.anularPedido = async (req, res) => {
 
     if (!pedido) {
       return res.status(404).json({ mensaje: 'Pedido no encontrado' });
+    }
+
+    // 🛡 Protección OWASP API1:
+    if (pedido.usuarioId !== req.user.id) {
+      return res.status(403).json({ mensaje: 'No tiene permiso para anular este pedido' });
     }
 
     if (pedido.estado === 'anulado') {
