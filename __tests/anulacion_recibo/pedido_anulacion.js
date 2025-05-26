@@ -3,7 +3,7 @@ const app = require('../../app');
 const Pedido = require('../../models/pedido');
 
 describe('🛑 HU 010 - Anulación de pedido existente', () => {
-  const idPedidoExistente = 3; //id del pedido
+  const idPedidoExistente = 2; //id del pedido
 
   test('Debería anular un pedido existente', async () => {
     // Verifica que el pedido existe antes de anular
