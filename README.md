@@ -2,9 +2,6 @@
 
 Este proyecto representa el backend de la plataforma **SamyAngels**, una tienda online que permite a los usuarios registrarse, iniciar sesión, seleccionar productos, elegir métodos de pago y registrar pedidos.
 
----
-Todo el proyecto completo se encuentra en la rama actualizacion
----
 
 ## 🚀 Tecnologías usadas
 
@@ -76,10 +73,12 @@ La app correrá en [http://localhost:3000](http://localhost:3000)
 
 ```
 __tests__/
+├── anulacion_recibo/
 ├── login/
 ├── pago/
 ├── pedido/
 ├── productos/
+├── recuperacion/
 ├── registro_usuario/
 └── validacion_registro/
 ```
@@ -96,10 +95,12 @@ npx jest __tests/pedido/pedido_exitoso.js
 
 4. **Correr todos los tests de una carpeta específica**
 ```bash
+npx jest __tests/anulacion_recibo
 npx jest __tests/login
 npx jest __tests/pago
 npx jest __tests/pedido
 npx jest __tests/productos
+npx jest __tests/recuperacion
 npx jest __tests/registro_usuario
 npx jest __tests/validacion_registro
 ```
@@ -123,27 +124,31 @@ npx jest __tests/validacion_registro
 
 ```
 samyAngels/
-├── app.js
-├── bin/
-│   └── www
-├── config/
-│   └── database.js
-├── controllers/
-├── models/
-├── public/
-├── routes/
-├── views/
 ├── __tests__/
+│   ├── anulacion_recibo/
 │   ├── login/
 │   ├── pago/
 │   ├── pedido/
 │   ├── productos/
+│   ├── recuperacion/
 │   ├── registro_usuario/
 │   └── validacion_registro/
+├── bin/
+│   └── www
+├── config/
+├── controllers/
+├── middlewares/
+├── models/
+├── node_modules/
+├── public/
+├── routes/
+├── views/
 ├── .gitignore
+├── app.js
 ├── jest.config.js
 ├── package-lock.json
-└── package.json
+├── package.json
+└── README.md
 ```
 
 ---
